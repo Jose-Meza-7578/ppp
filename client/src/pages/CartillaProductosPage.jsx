@@ -3,16 +3,29 @@ import Header from "../components/Header";
 
 function CartillaProductosPage() {
   const [data, setData] = useState([]);
+  const [sucursal, setSucursal] = useState("");
   useEffect(() => {
-    fetch("http://localhost:3000/api/productos")
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((err) => console.log(err));
-  }, []);
+    if (sucursal) {
+      fetch(`http://localhost:3000/productos/${sucursal}`)
+        .then((response) => response.json())
+        .then((data) => setData(data))
+        .catch((err) => console.log(err));
+    }
+  }, [sucursal]);
+
+const handleSelectChange = (e) => {
+  setSucursal(e.target.value);
+  };
+
+  console.log(data);
   return (
     <div>
       <Header />
-      <h1>Cartilla de Productos</h1>
+      <select value={sucursal} onChange={handleSelectChange}>
+        <option value="">Seleccione una Sucursal</option>
+        <option value="1">San Carlos</option>
+        <option value="2">Academia</option>
+      </select>
       {/* directiva de productos */}
       <div className="relative flex max-w-screen min-h-screen flex-col justify-center overflow-hidden py-6 sm:py-12">
         <div className="mx-auto max-w-screen-xl px-4 w-full">
