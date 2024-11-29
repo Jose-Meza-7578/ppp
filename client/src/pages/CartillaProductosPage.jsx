@@ -13,11 +13,10 @@ function CartillaProductosPage() {
     }
   }, [sucursal]);
 
-const handleSelectChange = (e) => {
-  setSucursal(e.target.value);
+  const handleSelectChange = (e) => {
+    setSucursal(e.target.value);
   };
 
-  console.log(data);
   return (
     <div>
       <Header />
@@ -26,7 +25,6 @@ const handleSelectChange = (e) => {
         <option value="1">San Carlos</option>
         <option value="2">Academia</option>
       </select>
-      {/* directiva de productos */}
       <div className="relative flex max-w-screen min-h-screen flex-col justify-center overflow-hidden py-6 sm:py-12">
         <div className="mx-auto max-w-screen-xl px-4 w-full">
           <div className="grid w-full sm:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -37,7 +35,11 @@ const handleSelectChange = (e) => {
               >
                 <div className="h-auto overflow-hidden">
                   <div className="h-44 overflow-hidden relative">
-                    <img src="https://picsum.photos/400/400" alt="" />
+                    <img
+                      src={`data:image/jpeg;base64,${item.Foto}`}
+                      alt={item.descripcion}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
                 <div className="bg-white py-4 px-3">

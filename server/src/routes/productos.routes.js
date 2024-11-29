@@ -10,7 +10,14 @@ router.get("/productos/:idsede", async (req, res) => {
     .request()
     .input("idsede", idsede)
     .execute("sp_mostrarproductoporsede");
-  res.json(result.recordset);
+    const productos = result.recordset.map(producto => {
+      if (producto.Foto) {
+        producto.Foto = Buffer.from(producto.Foto).toString('base64');
+      }
+      return producto;
+    });
+
+    res.json(productos);
 });
 
 export default router;
