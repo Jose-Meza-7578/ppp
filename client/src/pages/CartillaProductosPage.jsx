@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
+import SeleccionarSede from "../ui/SeleccionarSede";
+import CarritoModal from "../ui/CarritoModal";
+import adicionar from "../assets/agregar.svg";
 
 function CartillaProductosPage() {
   const [data, setData] = useState([]);
   const [sucursal, setSucursal] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
   useEffect(() => {
     if (sucursal) {
       fetch(`http://localhost:3000/productos/${sucursal}`)
@@ -17,14 +22,52 @@ function CartillaProductosPage() {
     setSucursal(e.target.value);
   };
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const addToCart = (item) => {
+    const existingItem = cartItems.find((cartItem) => cartItem.idprod === item.idprod);
+    if (existingItem) {
+      setCartItems(
+        cartItems.map((cartItem) =>
+          cartItem.idprod === item.idprod
+            ? { ...cartItem, cantidad: cartItem.cantidad + 1 }
+            : cartItem
+        )
+      );
+    } else {
+      setCartItems([...cartItems, { ...item, cantidad: 1 }]);
+    }
+  };
+
+  const removeFromCart = (index) => {
+    const newCartItems = cartItems.filter((_, i) => i !== index);
+    setCartItems(newCartItems);
+  };
+  const incrementQuantity = (index) => {
+    setCartItems(cartItems.map((item, i) =>
+      i === index ? { ...item, cantidad: item.cantidad + 1 } : item
+    ));
+  };
+
+  const decrementQuantity = (index) => {
+    setCartItems(cartItems.map((item, i) =>
+      i === index && item.cantidad > 1 ? { ...item, cantidad: item.cantidad - 1 } : item
+    ));
+  };
+  console.log(cartItems);
   return (
     <div>
-      <Header />
-      <select value={sucursal} onChange={handleSelectChange}>
-        <option value="">Seleccione una Sucursal</option>
-        <option value="1">San Carlos</option>
-        <option value="2">Academia</option>
-      </select>
+      <Header openModal={openModal} />
+
+      <SeleccionarSede
+        sucursal={sucursal}
+        handleSelectChange={handleSelectChange}
+      />
       <div className="relative flex max-w-screen min-h-screen flex-col justify-center overflow-hidden py-6 sm:py-12">
         <div className="mx-auto max-w-screen-xl px-4 w-full">
           <div className="grid w-full sm:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -51,25 +94,9 @@ function CartillaProductosPage() {
                       {item.stock} en stock
                     </p>
                     <div className="relative z-40 flex items-center gap-2">
-                      <a
-                        className="text-orange-600 hover:text-blue-500"
-                        href=""
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          className="size-6"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M12 4.5v15m7.5-7.5h-15"
-                          />
-                        </svg>
-                      </a>
+                      <button onClick={() => addToCart(item)}>
+                        <img src={adicionar} alt="" width={16}/>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -78,7 +105,15 @@ function CartillaProductosPage() {
           </div>
         </div>
       </div>
-      ;
+      {isModalOpen && (
+        <CarritoModal
+        closeModal={closeModal}
+        cartItems={cartItems}
+        removeFromCart={removeFromCart}
+        incrementQuantity={incrementQuantity}
+        decrementQuantity={decrementQuantity}
+        /> // Renderiza el modal si isModalOpen es true
+      )}
     </div>
   );
 }
