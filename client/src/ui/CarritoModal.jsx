@@ -2,8 +2,17 @@ import React from "react";
 import tachito from "../assets/tachito.svg";
 import restar from "../assets/disminuir.svg";
 import agregar from "../assets/agregar.svg";
+import ProcesarPedido from "./ProcesarPedido";
+import { useNavigate } from "react-router-dom";
+
+
 
 function CarritoModal({ closeModal, cartItems, removeFromCart,incrementQuantity, decrementQuantity }) {
+
+  const navigate = useNavigate();
+  const ProcesarPedido = () => {
+    navigate("/procesar");
+  };
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 w-screen h-screen">
       <div className="bg-white p-8 rounded shadow-lg w-96">
@@ -59,7 +68,7 @@ function CarritoModal({ closeModal, cartItems, removeFromCart,incrementQuantity,
             </tbody>
           </table>
         )}
-        <button>Procesar Pedido</button>
+        <button onClick={ProcesarPedido} className="bg-green-600">Procesar Pedido</button>
         <button
           onClick={closeModal}
           className="bg-blue-500 text-white px-4 py-2 rounded"
